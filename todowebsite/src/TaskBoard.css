@@ -1,0 +1,71 @@
+.task-board {
+    width: 80%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  h1 {
+    margin-top: 20px;
+  }
+  
+  .task-input {
+    margin-bottom: 20px;
+  }
+  
+  .task-input input {
+    padding: 8px;
+    font-size: 14px;
+    width: 200px;
+    margin-right: 10px;
+  }
+  
+  .task-input button {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .task-columns {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .task-column {
+    flex: 1;
+    min-height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .task-column h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .task {
+    background-color: #f4f4f4;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 3px;
+    cursor: move; /* Indicates draggable item */
+    text-align: left;
+  }
+  
+  /* Example column colors (adjust as desired) */
+  .todo {
+    border-top: 4px solid #ff6b6b; /* Red-ish */
+  }
+  
+  .inprogress {
+    border-top: 4px solid #ffa600; /* Orange-ish */
+  }
+  
+  .done {
+    border-top: 4px solid #51cf66; /* Green-ish */
+  }
+  
