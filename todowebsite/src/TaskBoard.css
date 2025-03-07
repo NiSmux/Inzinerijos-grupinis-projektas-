@@ -3,6 +3,7 @@
     margin: 0 auto;
     font-family: Arial, sans-serif;
     text-align: center;
+
   }
   
   h1 {
@@ -18,6 +19,7 @@
     font-size: 14px;
     width: 200px;
     margin-right: 10px;
+    border-radius: 10px;
   }
   
   .task-input button {
@@ -31,6 +33,7 @@
     justify-content: space-around;
     align-items: flex-start;
     gap: 20px;
+
   }
   
   .task-column {
@@ -40,6 +43,7 @@
     border-radius: 5px;
     padding: 10px;
     box-sizing: border-box;
+    background-color: #ddd;
   }
   
   .task-column h2 {
@@ -56,7 +60,6 @@
     text-align: left;
   }
   
-  /* Example column colors (adjust as desired) */
   .todo {
     border-top: 4px solid #ff6b6b; /* Red-ish */
   }
@@ -69,3 +72,20 @@
     border-top: 4px solid #51cf66; /* Green-ish */
   }
   
+  .rounded-button {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none; 
+    color: white;
+    background-color: #2e5d61;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer; 
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.rounded-button:hover {
+    background-color: #393b3d;
+    transform: scale(1.05);
+}

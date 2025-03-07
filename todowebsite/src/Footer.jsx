@@ -4,7 +4,7 @@ function Footer(){
 
     return(
         <footer>
-            <p>&copy; {new Date().getFullYear}To Do List</p>
+            <p>&copy; {new Date().getFullYear}Checkmark Champions</p>
         </footer>
     );
 }

@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import './TaskBoard.css'; // Optional external stylesheet
 
 function TaskBoard() {
-  // Example tasks
   const [tasks, setTasks] = useState([
-    { id: 1, title: 'Task 1', status: 'todo' },
-    { id: 2, title: 'Task 2', status: 'inprogress' },
-    { id: 3, title: 'Task 3', status: 'done' },
+
   ]);
 
   // Track the new task input
@@ -62,7 +59,7 @@ function TaskBoard() {
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
         />
-        <button onClick={handleAddTask}>Add Task</button>
+        <button className='rounded-button' onClick={handleAddTask}>Add Task</button>
       </div>
 
       {/* Columns */}
