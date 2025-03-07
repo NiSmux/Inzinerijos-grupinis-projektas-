@@ -58,6 +58,7 @@
     border-radius: 3px;
     cursor: move; /* Indicates draggable item */
     text-align: left;
+    display: flex;
   }
   
   .todo {
@@ -88,4 +89,16 @@
 .rounded-button:hover {
     background-color: #393b3d;
     transform: scale(1.05);
+}
+
+.delete-button {
+  border: none;
+  margin-left: auto;
+  cursor: pointer;
+  background-color: #f4f4f4;
+}
+
+.delete-button:hover {
+  border-radius: 5px;
+  background: darkred;
 }

@@ -23,6 +23,10 @@ function TaskBoard() {
     setNewTaskTitle('');
   };
 
+  const handleRemoveTask = (taskId) => {
+    setTasks((prevTasks) => prevTasks.filter(task => task.id !== taskId));
+  };
+
   // When drag starts, store the task id in the dataTransfer object
   const onDragStart = (e, taskId) => {
     e.dataTransfer.setData('text/plain', taskId);
@@ -81,6 +85,7 @@ function TaskBoard() {
                 onDragStart={(e) => onDragStart(e, task.id)}
               >
                 {task.title}
+                <button className="delete-button" onClick={() => handleRemoveTask(task.id)}>❌</button>
               </div>
             ))}
         </div>
@@ -102,6 +107,7 @@ function TaskBoard() {
                 onDragStart={(e) => onDragStart(e, task.id)}
               >
                 {task.title}
+                <button className="delete-button" onClick={() => handleRemoveTask(task.id)}>❌</button>
               </div>
             ))}
         </div>
@@ -123,12 +129,15 @@ function TaskBoard() {
                 onDragStart={(e) => onDragStart(e, task.id)}
               >
                 {task.title}
+                <button className="delete-button" onClick={() => handleRemoveTask(task.id)}>❌</button>
               </div>
             ))}
         </div>
       </div>
     </div>
   );
+
+
 }
 
 export default TaskBoard;
