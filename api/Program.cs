@@ -1,5 +1,18 @@
 var builder = WebApplication.CreateBuilder(args);
 
+//CORS integracija
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DataPolicy",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5293",
+                                "https://localhost:7066")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
+});
+
 // Pridedame paslaugas į konteinerį
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
