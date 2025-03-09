@@ -7,6 +7,7 @@ namespace api.Controllers
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
+        [EnableCors("DataPolicy")]
         [HttpGet]
         public IActionResult GetTasks()
         {
