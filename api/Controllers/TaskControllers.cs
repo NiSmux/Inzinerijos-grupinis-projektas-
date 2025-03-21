@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using System.Collections.Generic;
 
 namespace api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("DataPolicy")] // Apply CORS policy here
     public class TasksController : ControllerBase
     {
-        [EnableCors("DataPolicy")]
         [HttpGet]
         public IActionResult GetTasks()
         {
