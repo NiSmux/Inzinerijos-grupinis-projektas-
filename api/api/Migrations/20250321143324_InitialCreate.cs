@@ -55,11 +55,11 @@ namespace api.Migrations
                     columns: new[] { "Id", "Name", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "PhoneNumber", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnd", "LockoutEnabled", "AccessFailedCount" },
                     values: new object[,]
                     {
-                        { Guid.NewGuid().ToString(), "John Doe", "johndoe", "JOHNDOE", "john@example.com", "JOHN@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1234567890", true, false, null, true, 0 },
-                        { Guid.NewGuid().ToString(), "Abra Kadabra", "abrakadabra", "ABRAKADABRA", "jane@example.com", "JANE@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 }
-                        { Guid.NewGuid().ToString(), "Smikis Bilda", "smikisbilda", "SMIKISBILDA", "bilda@example.com", "BILDA@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 }
-                        { Guid.NewGuid().ToString(), "Jafar Afganistani", "jafarafganistani", "JAFARAFGANISTANI", "jaf@example.com", "JAF@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 }
-                        { Guid.NewGuid().ToString(), "Ugandan Key", "ugandankey", "UGANDANKEY", "key@example.com", "KEY@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 }
+                        { "1", "John Doe", "johndoe", "JOHNDOE", "john@example.com", "JOHN@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1234567890", true, false, null, true, 0 },
+                        { "2", "Abra Kadabra", "abrakadabra", "ABRAKADABRA", "jane@example.com", "JANE@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 },
+                        { "3", "Smikis Bilda", "smikisbilda", "SMIKISBILDA", "bilda@example.com", "BILDA@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 },
+                        { "4", "Jafar Afganistani", "jafarafganistani", "JAFARAFGANISTANI", "jaf@example.com", "JAF@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 },
+                        { "5", "Ugandan Key", "ugandankey", "UGANDANKEY", "key@example.com", "KEY@EXAMPLE.COM", true, "hashed_password_here", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0987654321", true, false, null, true, 0 }
                     }
                 );
 
