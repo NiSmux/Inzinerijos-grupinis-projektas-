@@ -13,5 +13,9 @@ namespace MyBackend.Data
 
         // DbSet for task entities
         public DbSet<TaskModel> Tasks { get; set; }
+
+        //Role-Based Access Control (RBAC)
+        public DbSet<Role> Roles { get; set; }
+        
     }
 }
