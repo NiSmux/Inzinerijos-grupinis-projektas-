@@ -4,23 +4,22 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using MyBackend.Data; 
+using MyBackend.Models;
 
 namespace api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [EnableCors("DataPolicy")] // Apply CORS policy
+    [EnableCors("DataPolicy")]
     public class TasksController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        // Inject the database context via dependency injection
         public TasksController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Tasks
         [HttpGet]
         public async Task<IActionResult> GetTasks()
         {
@@ -28,7 +27,6 @@ namespace api.Controllers
             return Ok(tasks);
         }
 
-        // GET: api/Tasks/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTask(int id)
         {
@@ -40,7 +38,6 @@ namespace api.Controllers
             return Ok(task);
         }
 
-        // POST: api/Tasks
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] TaskModel newTask)
         {
@@ -49,7 +46,6 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetTask), new { id = newTask.Id }, newTask);
         }
 
-        // PUT: api/Tasks/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskModel updatedTask)
         {
@@ -78,7 +74,6 @@ namespace api.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Tasks/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
@@ -91,15 +86,6 @@ namespace api.Controllers
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
             return NoContent();
-        }
-
-       
-        public class TaskModel
-        {
-            public int Id { get; set; }
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public bool IsCompleted { get; set; }
         }
     }
 }
