@@ -16,14 +16,17 @@ const SignupForm = () => {
       await axios.post('http://localhost:5000/api/auth/register', {
         name,
         email,
+        username: name,
         password,
+        confirmPassword: password
       });
+      
 
       alert('Account created!');
       navigate('/'); // Go to login page
     } catch (err) {
       console.error(err);
-      alert('Signup failed.');
+      alert(err.response?.data?.message || 'Signup failed.');
     }
   };
 
