@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import './TaskBoard.css'; // Optional external stylesheet
+import './TaskBoard.css';
 
 function TaskBoard() {
-  // Initial tasks state – will be loaded from API
   const [tasks, setTasks] = useState([]);
-  // State for tracking new task input
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [editingTaskId, setEditingTaskId] = useState(null);  // Track the task being edited
+  const [editedTaskTitle, setEditedTaskTitle] = useState(''); // Store edited task title
 
-  // useEffect – when the component mounts, call the API and set tasks from the response
   useEffect(() => {
     fetch('http://localhost:5293/api/tasks')
       .then(response => response.json())
@@ -19,36 +18,66 @@ function TaskBoard() {
       });
   }, []);
 
-  // Track the new task input and add a new task locally
   const handleAddTask = () => {
     if (!newTaskTitle.trim()) return;
 
     const newTask = {
-      id: Date.now(), // Locally generated ID
+      id: Date.now(),
       title: newTaskTitle,
-      status: 'todo'
+      status: 'todo',
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
     setNewTaskTitle('');
   };
 
-  // Remove a task locally
   const handleRemoveTask = (taskId) => {
     setTasks((prevTasks) => prevTasks.filter(task => task.id !== taskId));
   };
 
-  // When drag starts, store the task id in the dataTransfer object
+  const handleEditTask = (taskId, title) => {
+    setEditingTaskId(taskId);
+    setEditedTaskTitle(title);
+  };
+
+  const handleSaveEdit = async (taskId) => {
+    const updatedTask = {
+      id: taskId,
+      title: editedTaskTitle,
+      status: tasks.find(task => task.id === taskId).status,
+    };
+
+    // Send updated task to the backend API
+    await fetch(`http://localhost:5293/api/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedTask),
+    });
+
+    // Update the task locally
+    setTasks(tasks.map(task =>
+      task.id === taskId ? { ...task, title: editedTaskTitle } : task
+    ));
+
+    setEditingTaskId(null); // Exit editing mode
+    setEditedTaskTitle('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTaskId(null);
+    setEditedTaskTitle('');
+  };
+
   const onDragStart = (e, taskId) => {
     e.dataTransfer.setData('text/plain', taskId);
   };
 
-  // Allow dropping on an element (prevent default behavior)
   const onDragOver = (e) => {
     e.preventDefault();
   };
 
-  // When dropping, retrieve the task id and update its status
   const onDrop = (e, newStatus) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('text/plain');
@@ -66,7 +95,6 @@ function TaskBoard() {
     <div className="task-board">
       <h1>Task Management Board</h1>
 
-      {/* Input for adding new tasks */}
       <div className="task-input">
         <input
           type="text"
@@ -79,79 +107,55 @@ function TaskBoard() {
         </button>
       </div>
 
-      {/* Columns */}
       <div className="task-columns">
-        {/* To Do Column */}
-        <div
-          className="task-column todo"
-          onDragOver={onDragOver}
-          onDrop={(e) => onDrop(e, 'todo')}
-        >
-          <h2>To Do</h2>
-          {tasks
-            .filter((task) => task.status === 'todo')
-            .map((task) => (
-              <div
-                key={task.id}
-                className="task"
-                draggable
-                onDragStart={(e) => onDragStart(e, task.id)}
-              >
-                {task.title}
-                <button className="delete-button" onClick={() => handleRemoveTask(task.id)}>
-                  ❌
-                </button>
-              </div>
-            ))}
-        </div>
-
-        {/* In Progress Column */}
-        <div
-          className="task-column inprogress"
-          onDragOver={onDragOver}
-          onDrop={(e) => onDrop(e, 'inprogress')}
-        >
-          <h2>In Progress</h2>
-          {tasks
-            .filter((task) => task.status === 'inprogress')
-            .map((task) => (
-              <div
-                key={task.id}
-                className="task"
-                draggable
-                onDragStart={(e) => onDragStart(e, task.id)}
-              >
-                {task.title}
-                <button className="delete-button" onClick={() => handleRemoveTask(task.id)}>
-                  ❌
-                </button>
-              </div>
-            ))}
-        </div>
-
-        {/* Done Column */}
-        <div
-          className="task-column done"
-          onDragOver={onDragOver}
-          onDrop={(e) => onDrop(e, 'done')}
-        >
-          <h2>Done</h2>
-          {tasks
-            .filter((task) => task.status === 'done')
-            .map((task) => (
-              <div
-                key={task.id}
-                className="task"
-                draggable
-                onDragStart={(e) => onDragStart(e, task.id)}
-              >
-                {task.title}
-                <button className="delete-button" onClick={() => handleRemoveTask(task.id)}>
-                  ❌
-                </button>
-              </div>
-            ))}
-        </div>
+        {['todo', 'inprogress', 'done'].map((status) => (
+          <div
+            className={`task-column ${status}`}
+            key={status}
+            onDragOver={onDragOver}
+            onDrop={(e) => onDrop(e, status)}
+          >
+            <h2>{status.charAt(0).toUpperCase() + status.slice(1)}</h2>
+            {tasks
+              .filter((task) => task.status === status)
+              .map((task) => (
+                <div
+                  key={task.id}
+                  className="task"
+                  draggable
+                  onDragStart={(e) => onDragStart(e, task.id)}
+                >
+                  {editingTaskId === task.id ? (
+                    <div>
+                      <input
+                        type="text"
+                        value={editedTaskTitle}
+                        onChange={(e) => setEditedTaskTitle(e.target.value)}
+                      />
+                      <button onClick={() => handleSaveEdit(task.id)}>Save</button>
+                      <button onClick={handleCancelEdit}>Cancel</button>
+                    </div>
+                  ) : (
+                    <>
+                      {task.title}
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEditTask(task.id, task.title)}
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleRemoveTask(task.id)}
+                      >
+                        ❌
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -102,3 +102,10 @@
   border-radius: 5px;
   background: darkred;
 }
+
+.edit-button{
+  border: none;
+  margin-left: auto;
+  cursor: pointer;
+  background-color: #f4f4f4;
+}
