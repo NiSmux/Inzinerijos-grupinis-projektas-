@@ -9,7 +9,7 @@ function TaskBoard() {
 
   // useEffect – when the component mounts, call the API and set tasks from the response
   useEffect(() => {
-    fetch('https://localhost:7066/api/tasks')
+    fetch('http://localhost:5293/api/tasks')
       .then(response => response.json())
       .then(data => {
         setTasks(data);

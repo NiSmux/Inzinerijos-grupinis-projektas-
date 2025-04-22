@@ -37,31 +37,40 @@ namespace api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            _logger.LogInformation("Attempting to register user with email: {Email}", model.Email);
+            try
+            {
+                _logger.LogInformation("Attempting to register user with email: {Email}", model.Email);
 
+                
+                if (model.Password.Length < 8 || !model.Password.Any(char.IsDigit) || !model.Password.Any(char.IsUpper) || !model.Password.Any(char.IsLower))
+                {
+                    return BadRequest(new { Message = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number." });
+                }
+
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    Name = model.Name // Set the custom Name property
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User registered successfully: {Email}", model.Email);
+                    return Ok(new { Message = "User registered successfully" });
+                }
+
+                var errors = result.Errors.Select(e => e.Description);
+                return BadRequest(new { Message = "Registration failed", Errors = errors });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Error during registration: " + ex.Message);
+                return StatusCode(500, new { message = "Internal server error: " + ex.Message });
+            }
             
-            if (model.Password.Length < 8 || !model.Password.Any(char.IsDigit) || !model.Password.Any(char.IsUpper) || !model.Password.Any(char.IsLower))
-            {
-                return BadRequest(new { Message = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number." });
-            }
-
-            var user = new User
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                Name = model.Name // Set the custom Name property
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("User registered successfully: {Email}", model.Email);
-                return Ok(new { Message = "User registered successfully" });
-            }
-
-            var errors = result.Errors.Select(e => e.Description);
-            return BadRequest(new { Message = "Registration failed", Errors = errors });
         }
 
         // ✅ Login and generate JWT token

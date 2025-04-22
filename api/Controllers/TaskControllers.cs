@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ namespace api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [EnableCors("DataPolicy")]
     public class TasksController : ControllerBase
     {
         private readonly AppDbContext _context;

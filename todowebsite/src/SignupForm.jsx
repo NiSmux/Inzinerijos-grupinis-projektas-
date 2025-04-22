@@ -11,15 +11,22 @@ const SignupForm = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
+    
+    // Debug: Show what we're sending
+    const payload = {
+      Name: name,
+      Email: email,
+      Password: password
+    };
+    console.log("Sending:", payload);
+  
     try {
-      await axios.post('http://localhost:5000/api/auth/register', {
-        name,
-        email,
-        username: name,
-        password,
-        confirmPassword: password
+      const response = await axios.post('http://localhost:5293/api/auth/register', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
+      console.log("Response:", response.data);
       
 
       alert('Account created!');

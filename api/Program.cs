@@ -35,13 +35,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Add CORS policy
+// Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173") // Allow your frontend URL here
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173") // Allow your React frontend URL here
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 // Add Controllers
@@ -51,15 +51,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Enable CORS before Authentication and Authorization
+app.UseCors("AllowFrontend");
+
 // Enable Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
-
-// Use HTTPS Redirection
-app.UseHttpsRedirection();
-
-// Enable CORS
-app.UseCors("AllowFrontend");
 
 // Enable Authentication and Authorization
 app.UseAuthentication();
