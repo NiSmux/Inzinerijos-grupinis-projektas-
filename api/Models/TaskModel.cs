@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyBackend.Models
 {
@@ -14,7 +15,7 @@ namespace MyBackend.Models
         [Required]
         public bool IsCompleted { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; } = null!;
         public User User { get; set; } = null!;
     }
 }
