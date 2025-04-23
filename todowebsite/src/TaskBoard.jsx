@@ -8,31 +8,95 @@ function TaskBoard() {
   const [editedTaskTitle, setEditedTaskTitle] = useState(''); // Store edited task title
 
   useEffect(() => {
-    fetch('http://localhost:5293/api/tasks')
-      .then(response => response.json())
-      .then(data => {
+    const fetchTasks = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.warn('No auth token found.');
+        return;
+      }
+  
+      try {
+        const response = await fetch('http://localhost:5293/api/tasks', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch tasks: ${response.status}`);
+        }
+  
+        const data = await response.json();
         setTasks(data);
-      })
-      .catch(error => {
-        console.error('Error fetching tasks from API:', error);
-      });
+      } catch (err) {
+        console.error('Error fetching tasks from API:', err.message);
+      }
+    };
+  
+    fetchTasks();
   }, []);
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (!newTaskTitle.trim()) return;
-
-    const newTask = {
-      id: Date.now(),
-      title: newTaskTitle,
-      status: 'todo',
-    };
-
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-    setNewTaskTitle('');
+  
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.warn('No auth token found in localStorage');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://localhost:5293/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: newTaskTitle,
+          description: '',
+          isCompleted: false,
+          status: 'todo'
+        })
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create task: ${response.status} - ${errorText}`);
+      }
+  
+      const createdTask = await response.json();
+      setTasks((prevTasks) => [...prevTasks, createdTask]);
+      setNewTaskTitle('');
+    } catch (err) {
+      console.error('Error adding task:', err.message);
+      alert('Error: ' + err.message);
+    }
   };
 
-  const handleRemoveTask = (taskId) => {
-    setTasks((prevTasks) => prevTasks.filter(task => task.id !== taskId));
+  const handleRemoveTask = async (taskId) => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.warn('No auth token found in localStorage');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:5293/api/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to delete task: ${response.status}`);
+      }
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+    } catch (err) {
+      console.error('Error deleting task:', err.message);
+      alert('Error deleting task: ' + err.message);
+    }
   };
 
   const handleEditTask = (taskId, title) => {
@@ -41,28 +105,54 @@ function TaskBoard() {
   };
 
   const handleSaveEdit = async (taskId) => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.warn('No auth token found in localStorage');
+      return;
+    }
+  
+    const currentTask = tasks.find(task => task.id === taskId);
+    if (!currentTask) {
+      console.error('Task not found for editing');
+      return;
+    }
+  
     const updatedTask = {
       id: taskId,
       title: editedTaskTitle,
-      status: tasks.find(task => task.id === taskId).status,
+      description: currentTask.description || '',
+      isCompleted: currentTask.isCompleted || false,
+      status: currentTask.status,
+      userId: currentTask.userId,
     };
+  
+    try {
+      const response = await fetch(`http://localhost:5293/api/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedTask),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update task: ${response.status} - ${errorText}`);
+      }
 
-    // Send updated task to the backend API
-    await fetch(`http://localhost:5293/api/tasks/${taskId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedTask),
-    });
-
-    // Update the task locally
-    setTasks(tasks.map(task =>
-      task.id === taskId ? { ...task, title: editedTaskTitle } : task
-    ));
-
-    setEditingTaskId(null); // Exit editing mode
-    setEditedTaskTitle('');
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id === taskId ? { ...task, ...updatedTask } : task
+        )
+      );
+  
+      setEditingTaskId(null);
+      setEditedTaskTitle('');
+    } catch (err) {
+      console.error('Error saving edited task:', err.message);
+      alert('Error editing task: ' + err.message);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -78,17 +168,43 @@ function TaskBoard() {
     e.preventDefault();
   };
 
-  const onDrop = (e, newStatus) => {
+  const onDrop = async (e, newStatus) => {
     e.preventDefault();
-    const taskId = e.dataTransfer.getData('text/plain');
-
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === parseInt(taskId, 10)
-          ? { ...task, status: newStatus }
-          : task
-      )
-    );
+    const taskId = parseInt(e.dataTransfer.getData('text/plain'), 10);
+    const token = localStorage.getItem('authToken');
+    const taskToUpdate = tasks.find(task => task.id === taskId);
+  
+    if (!taskToUpdate || taskToUpdate.status === newStatus) return;
+  
+    const updatedTask = {
+      ...taskToUpdate,
+      status: newStatus
+    };
+  
+    try {
+      const response = await fetch(`http://localhost:5293/api/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedTask),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update task status: ${response.status} - ${errorText}`);
+      }
+  
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+    } catch (err) {
+      console.error('Error updating task status:', err.message);
+      alert('Error updating status: ' + err.message);
+    }
   };
 
   return (

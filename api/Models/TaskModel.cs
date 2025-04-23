@@ -8,14 +8,18 @@ namespace MyBackend.Models
         public int Id { get; set; }
 
         [Required]
-        public string Title { get; set; } = null!;
+        public string Title { get; set; } = string.Empty;
 
-        public string Description { get; set; } = null!;
+        public string Description { get; set; } = string.Empty;
 
+        public bool IsCompleted { get; set; } = false;
+        
         [Required]
-        public bool IsCompleted { get; set; }
+        public string Status { get; set; } = "todo";
 
-        public string UserId { get; set; } = null!;
-        public User User { get; set; } = null!;
+        [ForeignKey("User")]
+        public string? UserId { get; set; }
+
+        public User? User { get; set; }
     }
 }

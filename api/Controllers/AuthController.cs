@@ -33,7 +33,7 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        // ✅ Register a new user
+        // Register a new user
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
@@ -67,13 +67,13 @@ namespace api.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("❌ Error during registration: " + ex.Message);
+                Console.WriteLine("Error during registration: " + ex.Message);
                 return StatusCode(500, new { message = "Internal server error: " + ex.Message });
             }
             
         }
 
-        // ✅ Login and generate JWT token
+        // Login and generate JWT token
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -102,7 +102,7 @@ namespace api.Controllers
             return Unauthorized(new { Message = "Invalid credentials" });
         }
 
-        // ✅ Generate JWT token
+        // Generate JWT token
         private string GenerateJwtToken(User user)
         {
             var jwtKey = _configuration["Jwt:Key"] ?? "SuperSecretKey";
@@ -111,14 +111,14 @@ namespace api.Controllers
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("name", user.Name),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // Papildomi reikalavimai (pvz., rodyti vartotojo roles)
-            if (user.IsAdmin) // Pavyzdys, kaip pridėti admin statusą
+            if (user.IsAdmin)
             {
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
             }
@@ -135,15 +135,15 @@ namespace api.Controllers
         }
     }
 
-    // ✅ Register model
+    // Register model
     public class RegisterModel
     {
-        public string Name { get; set; } = string.Empty; // Custom Name property
+        public string Name { get; set; } = string.Empty;
         public string Email { get; set; }
         public string Password { get; set; }
     }
 
-    // ✅ Login model
+    // Login model
     public class LoginModel
     {
         public string Email { get; set; }

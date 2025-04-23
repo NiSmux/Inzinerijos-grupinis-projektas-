@@ -18,9 +18,6 @@ namespace MyBackend.Data
             modelBuilder.Entity<Role>()
                 .Property(r => r.Id)
                 .ValueGeneratedNever();
-
-            // Optional: seed default role if needed
-            // modelBuilder.Entity<Role>().HasData(new Role { Id = 0, Name = "Default" });
         }
     }
 }

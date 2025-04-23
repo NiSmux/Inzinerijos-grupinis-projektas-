@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using MyBackend.Data; 
 using MyBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
@@ -22,9 +24,18 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTasks()
         {
-            var tasks = await _context.Tasks.ToListAsync();
+            var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var tasks = await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
+
             return Ok(tasks);
         }
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTask(int id)
@@ -40,8 +51,15 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] TaskModel newTask)
         {
+            var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User ID not found from token.");
+
+            newTask.UserId = userId; // Assign the current user's ID
             _context.Tasks.Add(newTask);
             await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetTask), new { id = newTask.Id }, newTask);
         }
 
