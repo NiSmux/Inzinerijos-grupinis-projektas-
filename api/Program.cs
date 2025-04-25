@@ -7,9 +7,11 @@ using MyBackend.Data;
 using MyBackend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Log the database connection
 Console.WriteLine("🔌 Using connection: " + builder.Configuration.GetConnectionString("DefaultConnection"));
 
-// Add Database Context
+// Add EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -18,7 +20,7 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure JWT Authentication
+// JWT setup
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKey";
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
@@ -38,37 +40,36 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configure CORS
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173") // Allow your React frontend URL here
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
 
-// Add Controllers
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Enable CORS before Authentication and Authorization
+// Use developer error page first (for better error info)
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Pipeline
+app.UseRouting();
 app.UseCors("AllowFrontend");
-
-// Enable Swagger
-app.UseSwagger();
-app.UseSwaggerUI();
-
-// Enable Authentication and Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map controllers
 app.MapControllers();
-
-// For development (optional)
-app.UseDeveloperExceptionPage();
 
 app.Run();

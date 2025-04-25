@@ -1,12 +1,14 @@
+import { useLocation } from "react-router-dom";
 
+const Footer = () => {
+  const location = useLocation();
+  const isAuthPage = ["/login", "/register"].includes(location.pathname);
 
-function Footer(){
+  return (
+    <footer className="footer" style={isAuthPage ? { color: '#fff' } : {}}>
+      © Checkmark Champions
+    </footer>
+  );
+};
 
-    return(
-        <footer>
-            <p>&copy; Checkmark Champions</p>
-        </footer>
-    );
-}
-
-export default Footer
+export default Footer;

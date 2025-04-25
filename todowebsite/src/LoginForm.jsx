@@ -9,7 +9,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
 
   const handleLogin = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5293/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

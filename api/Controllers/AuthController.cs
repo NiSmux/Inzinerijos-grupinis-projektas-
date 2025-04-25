@@ -41,7 +41,6 @@ namespace api.Controllers
             {
                 _logger.LogInformation("Attempting to register user with email: {Email}", model.Email);
 
-                
                 if (model.Password.Length < 8 || !model.Password.Any(char.IsDigit) || !model.Password.Any(char.IsUpper) || !model.Password.Any(char.IsLower))
                 {
                     return BadRequest(new { Message = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number." });
@@ -51,7 +50,7 @@ namespace api.Controllers
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    Name = model.Name // Set the custom Name property
+                    Name = model.Name
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -67,10 +66,9 @@ namespace api.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error during registration: " + ex.Message);
+                _logger.LogError(ex, "Error during registration");
                 return StatusCode(500, new { message = "Internal server error: " + ex.Message });
             }
-            
         }
 
         // Login and generate JWT token
@@ -114,7 +112,7 @@ namespace api.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("name", user.Name),
+                new Claim("name", user.Name ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

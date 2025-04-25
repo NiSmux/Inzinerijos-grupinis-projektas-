@@ -7,8 +7,11 @@
   }
   
   h1 {
-    margin-top: 20px;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
   }
+  
   
   .task-input {
     margin-bottom: 20px;
@@ -39,12 +42,21 @@
   .task-column {
     flex: 1;
     min-height: 300px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 15px;
     box-sizing: border-box;
-    background-color: #ddd;
+    background: rgba(255, 255, 255, 0.1); /* transparent white */
+    backdrop-filter: blur(10px); /* soft blur glass effect */
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
   }
+  
+  .task-column:hover {
+    transform: translateY(-3px);
+  }
+  
   
   .task-column h2 {
     margin-top: 0;
@@ -62,16 +74,15 @@
   }
   
   .todo {
-    border-top: 4px solid #ff6b6b; /* Red-ish */
+    border-top: 4px solid #ff6b6b; /* Red */
   }
-  
   .inprogress {
-    border-top: 4px solid #ffa600; /* Orange-ish */
+    border-top: 4px solid #ffa600; /* Orange */
+  }
+  .done {
+    border-top: 4px solid #51cf66; /* Green */
   }
   
-  .done {
-    border-top: 4px solid #51cf66; /* Green-ish */
-  }
   
   .rounded-button {
     display: inline-block;
@@ -109,3 +120,66 @@
   cursor: pointer;
   background-color: #f4f4f4;
 }
+
+.taskboard-background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+}
+
+.taskboard-background span {
+  position: absolute;
+  bottom: -150px;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%);
+  animation: floatUp 10s linear infinite, colorChange 5s ease-in-out infinite alternate;
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+/* Floating animation */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-110vh) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Random color change */
+@keyframes colorChange {
+  0% {
+    background: radial-gradient(circle, rgba(255,0,150,0.8) 0%, rgba(255,0,150,0) 60%);
+  }
+  25% {
+    background: radial-gradient(circle, rgba(0,255,200,0.8) 0%, rgba(0,255,200,0) 60%);
+  }
+  50% {
+    background: radial-gradient(circle, rgba(0,150,255,0.8) 0%, rgba(0,150,255,0) 60%);
+  }
+  75% {
+    background: radial-gradient(circle, rgba(255,255,0,0.8) 0%, rgba(255,255,0,0) 60%);
+  }
+  100% {
+    background: radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0) 60%);
+  }
+}
+
+/* Animated background behind the particles */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
