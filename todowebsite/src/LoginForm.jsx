@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const LoginForm = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
 
   const handleLogin = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -21,7 +22,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
         const data = await response.json();
         localStorage.setItem('authToken', data.token);
         console.log('Received token:', data.token);
-        setIsAuthenticated(true); // ✅ Let app know we are logged in
+        setIsAuthenticated(true);
         return true;
       } else {
         alert("Invalid login credentials");
@@ -42,7 +43,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
           e.preventDefault();
           const success = await handleLogin(email, password);
           if (success) {
-            navigate('/taskboard'); // ✅ Redirect after login
+            navigate('/taskboard');
           }
         }}>
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />

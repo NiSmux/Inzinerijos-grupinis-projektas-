@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TaskBoard.css';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function TaskBoard() {
   const [tasks, setTasks] = useState([]);
@@ -13,7 +14,7 @@ function TaskBoard() {
       if (!token) return;
 
       try {
-        const response = await fetch('http://localhost:5000/api/tasks', {
+        const response = await fetch(`${API_BASE_URL}/api/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error();
@@ -33,7 +34,7 @@ function TaskBoard() {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_BASE_URL}/api/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ function TaskBoard() {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -84,7 +85,7 @@ function TaskBoard() {
     if (!updatedTask) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ function TaskBoard() {
     if (!taskToUpdate || taskToUpdate.status === newStatus) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -194,14 +195,17 @@ function TaskBoard() {
                     onDragStart={(e) => onDragStart(e, task.id)}
                   >
                     {editingTaskId === task.id ? (
-                      <div>
+                      <div className="edit-mode">
                         <input
+                          className="edit-input"
                           type="text"
                           value={editedTaskTitle}
                           onChange={(e) => setEditedTaskTitle(e.target.value)}
                         />
-                        <button onClick={() => handleSaveEdit(task.id)}>Save</button>
-                        <button onClick={handleCancelEdit}>Cancel</button>
+                        <div className="edit-buttons">
+                          <button className="save-button" onClick={() => handleSaveEdit(task.id)}>💾 Save</button>
+                          <button className="cancel-button" onClick={handleCancelEdit}>❌ Cancel</button>
+                        </div>
                       </div>
                     ) : (
                       <>

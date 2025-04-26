@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import './SignupForm.css';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const SignupForm = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const SignupForm = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', payload, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, payload, {
         headers: {
           'Content-Type': 'application/json',
         },
