@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './TaskBoard.css';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+/*
+const { boardId } = useParams();
+
+useEffect(() => {
+  fetch(`/api/boards/${boardId}/tasks`)
+    .then(res => res.json())
+    .then(data => setTasks(data));
+}, [boardId]);
+*/
+
 function TaskBoard() {
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
