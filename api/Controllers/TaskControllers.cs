@@ -21,6 +21,17 @@ namespace api.Controllers
             _context = context;
         }
 
+        /*
+
+        [HttpGet("boards/{boardId}/tasks")]
+        public IActionResult GetTasksForBoard(int boardId)
+        {
+            var tasks = _context.Tasks.Where(t => t.BoardId == boardId).ToList();
+            return Ok(tasks);
+        }
+        
+        */
+        
         [HttpGet]
         public async Task<IActionResult> GetTasks()
         {
