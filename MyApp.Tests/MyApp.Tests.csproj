@@ -1,18 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <IsPackable>false</IsPackable>
+  <TargetFramework>net9.0</TargetFramework>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <Nullable>enable</Nullable>
+  <IsPackable>false</IsPackable>
+
+  <Exclude>[*.Migrations]*</Exclude>
+  <ExcludeByFile>..\api\Migrations\**\*.cs</ExcludeByFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\api\api.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-  <PackageReference Include="coverlet.collector" Version="6.0.2" />
+  <PackageReference Include="coverlet.collector" Version="6.0.4">
+    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PrivateAssets>all</PrivateAssets>
+  </PackageReference>
+  <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.4" />
   <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.4" />
   <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
   <PackageReference Include="xunit" Version="2.9.3" />

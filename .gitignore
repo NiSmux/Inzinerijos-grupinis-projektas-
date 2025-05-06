@@ -398,3 +398,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+*.html
+MyApp.Tests/coveragereport/class.js
+MyApp.Tests/coveragereport/icon_cog.svg
+/MyApp.Tests/coveragereport
