@@ -7,11 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using TodoListApp.Data;
 using TodoListApp.Models;
 
 namespace TodoListApp.Controllers
 {
+    [Authorize]
     public class BoardsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,136 +24,123 @@ namespace TodoListApp.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> GetBoards()
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
             var boards = await _context.Boards
+                .Where(b => b.UserId == userId)
                 .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
             
-            return View(boards);
+            return Ok(boards);
         }
 
         // GET: Boards/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBoard(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
             var board = await _context.Boards
                 .Include(b => b.TodoItems)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
                 
             if (board == null)
-            {
                 return NotFound();
-            }
 
-            return View(board);
-        }
-
-        // GET: Boards/Create
-        public IActionResult Create()
-        {
-            return View();
+            return Ok(board);
         }
 
         // POST: Boards/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description")] Board board)
+        public async Task<IActionResult> CreateBoard([FromBody] Board board)
         {
-            if (ModelState.IsValid)
-            {
-                board.CreatedAt = DateTime.Now;
-                _context.Add(board);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(board);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            board.UserId = userId;
+            board.CreatedAt = DateTime.Now;
+            
+            _context.Boards.Add(board);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetBoard), new { id = board.Id }, board);
         }
 
-        // GET: Boards/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // PUT: Boards/Edit/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBoard(int id, [FromBody] Board board)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            var board = await _context.Boards.FindAsync(id);
-            if (board == null)
-            {
-                return NotFound();
-            }
-            return View(board);
-        }
-
-        // POST: Boards/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Board board)
-        {
             if (id != board.Id)
-            {
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Check if board exists and belongs to user
+            var existingBoard = await _context.Boards.FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+            if (existingBoard == null)
                 return NotFound();
+
+            // Preserve the original creation date and user ID
+            board.CreatedAt = existingBoard.CreatedAt;
+            board.UserId = userId;
+
+            _context.Entry(existingBoard).State = EntityState.Detached;
+            _context.Entry(board).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BoardExists(id))
+                    return NotFound();
+                else
+                    throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Preserve the CreatedAt date from the original board
-                    var originalBoard = await _context.Boards.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
-                    board.CreatedAt = originalBoard.CreatedAt;
-                    
-                    _context.Update(board);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BoardExists(board.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(board);
+            return NoContent();
         }
 
-        // GET: Boards/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // DELETE: Boards/Delete/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBoard(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
             var board = await _context.Boards
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
+                
             if (board == null)
-            {
                 return NotFound();
-            }
 
-            return View(board);
-        }
-
-        // POST: Boards/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var board = await _context.Boards.FindAsync(id);
             _context.Boards.Remove(board);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool BoardExists(int id)
