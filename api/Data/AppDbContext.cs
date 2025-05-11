@@ -22,19 +22,12 @@ namespace MyBackend.Data
                 .Property(r => r.Id)
                 .ValueGeneratedNever();
 
-            // Configure Board entity
-            modelBuilder.Entity<Board>()
-                .HasMany(b => b.TodoItems)
-                .WithOne(t => t.Board)
+            // Configure the relationship between Board and TodoItem
+            modelBuilder.Entity<TodoItem>()
+                .HasOne(t => t.Board)
+                .WithMany(b => b.TodoItems)
                 .HasForeignKey(t => t.BoardId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // Configure TodoItem entity
-            modelBuilder.Entity<TodoItem>()
-                .HasOne(t => t.User)
-                .WithMany()
-                .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
