@@ -6,23 +6,39 @@ namespace TodoListApp.Models
 {
     public class TodoItem
     {
+        [Key]
         public int Id { get; set; }
         
         [Required]
-        public string Title { get; set; }
+        [StringLength(200)]
+        public string Title { get; set; } = string.Empty;
         
-        public string Description { get; set; }
+        [StringLength(1000)]
+        public string? Description { get; set; }
         
         public bool IsCompleted { get; set; } = false;
         
-        public DateTime DueDate { get; set; }
+        [Required]
+        public string Status { get; set; } = "todo"; // todo, inprogress, done
+        
+        public int? Priority { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         
-        // Foreign key to Board
+        public DateTime? ModifiedAt { get; set; }
+        
+        public DateTime? DueDate { get; set; }
+        
+        [Required]
         public int BoardId { get; set; }
         
-        // Navigation property
-        public virtual Board Board { get; set; }
+        [ForeignKey("BoardId")]
+        public Board? Board { get; set; }
+        
+        [Required]
+        public string UserId { get; set; } = string.Empty;
+        
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
     }
 }
