@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using TodoListApp.Data;
-using TodoListApp.Models;
+using MyBackend.Data;
+using MyBackend.Models;
 
 namespace TodoListApp.Controllers
 {
