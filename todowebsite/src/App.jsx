@@ -23,10 +23,27 @@ const AppContent = ({ isAuthenticated, setIsAuthenticated }) => {
           />
           <Route path="/signup" element={<SignupForm />} />
           <Route
-            path="/taskboard"
+            path="/boards"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <BoardsList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/board/:boardId"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <TaskBoard />
+              </ProtectedRoute>
+            }
+          />
+          {/* Legacy route - redirect to boards list */}
+          <Route
+            path="/taskboard"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Navigate to="/boards" replace />
               </ProtectedRoute>
             }
           />
