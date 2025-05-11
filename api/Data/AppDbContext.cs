@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyBackend.Models;
+using TodoListApp.Models
 
 namespace MyBackend.Data
 {
