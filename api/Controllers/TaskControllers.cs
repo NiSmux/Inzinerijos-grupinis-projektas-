@@ -21,30 +21,41 @@ namespace api.Controllers
             _context = context;
         }
 
-        /*
-
-        [HttpGet("boards/{boardId}/tasks")]
-        public IActionResult GetTasksForBoard(int boardId)
-        {
-            var tasks = _context.Tasks.Where(t => t.BoardId == boardId).ToList();
-            return Ok(tasks);
-        }
         
-        */
         
         [HttpGet]
-        public async Task<IActionResult> GetTasks()
+        public async Task<IActionResult> GetTasks(int? boardId)
         {
             var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
+            
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-            var tasks = await _context.Tasks
-                .Where(t => t.UserId == userId)
-                .ToListAsync();
+            // If no board specified, get tasks across all user's boards
+            if (boardId == null)
+            {
+                var tasks = await _context.TodoItems
+                    .Where(t => t.UserId == userId)
+                    .Include(t => t.Board)
+                    .ToListAsync();
 
-            return Ok(tasks);
+                return Ok(tasks);
+            }
+            else
+            {
+                // Check if board belongs to user
+                var board = await _context.Boards
+                    .FirstOrDefaultAsync(b => b.Id == boardId && b.UserId == userId);
+                
+                if (board == null)
+                    return NotFound("Board not found or access denied");
+
+                var tasks = await _context.TodoItems
+                    .Where(t => t.BoardId == boardId && t.UserId == userId)
+                    .ToListAsync();
+
+                return Ok(tasks);
+            }
         }
         
 
