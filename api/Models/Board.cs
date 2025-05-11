@@ -9,18 +9,27 @@ namespace TodoListApp.Models
 {
     public class Board
     {
+        [Key]
         public int Id { get; set; }
         
         [Required]
         [StringLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         [StringLength(500)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
+        
+        [Required]
+        public string UserId { get; set; } = string.Empty;
+        
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         
-        // Navigation property for the TodoItems associated with this board
-        public virtual ICollection<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
+        public DateTime? ModifiedAt { get; set; }
+        
+        // Navigation property for the tasks in this board
+        public ICollection<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
     }
 }
