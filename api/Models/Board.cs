@@ -10,6 +10,11 @@ namespace TodoListApp.Models
     public class Board
     {
         public int Id { get; set; }
+
+
+        
+        public string UserID {get; set; }
+
         
         [Required]
         [StringLength(100)]
