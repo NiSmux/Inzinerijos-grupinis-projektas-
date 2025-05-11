@@ -1,0 +1,185 @@
+/* todowebsite/src/Settings.css */
+
+/* Pagrindinis puslapio konteineris - dabar jam pritaikomas FONO stilius */
+.settings-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Galite keisti į 'center' centroti vertikaliai */
+  min-height: calc(100vh - var(--header-height, 60px));
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  /* <-- PAKEISTOS FONO GRADIENTO SPALVOS (tamsesnės, pilkesnės) --> */
+  background: linear-gradient(
+    180deg,
+    rgba(30, 45, 55, 1) 0%,    /* Viršus (tamsesnė pilkai-melsva) */
+    rgba(40, 60, 75, 1) 50%,   /* Vidurys */
+    rgba(50, 75, 90, 1) 100%   /* Apačia */
+  );
+  /* <-- Fono stiliaus pabaiga --> */
+
+  /* Jei nenorite, kad fonas prasidėtų iškart po headerio, galite pridėti viršutinį padding */
+  /* padding-top: var(--header-height, 60px); */
+}
+
+/* Konteineris vidiniam turiniui (formoms) apriboti ir centroti */
+.settings-content-wrapper {
+    width: 100%;
+    max-width: 500px; /* Maksimalus formų blokų plotis */
+    margin-top: 20px; /* Atitraukimas nuo viršaus po headerio */
+}
+
+/* Pagrindinis Nustatymų puslapio antraštė */
+.settings-main-title {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+/* Stilius stikliniams kortelių/sekcijų blokams (Glassmorphic efektas) */
+.glassmorphic-card {
+  background: rgba(255, 255, 255, 0.08); /* Šiek tiek mažiau permatomas fonas, kad išsiskirtų */
+  backdrop-filter: blur(12px); /* Šiek tiek stipresnis suliejimas */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Šiek tiek mažiau ryškus apvadas */
+  border-radius: 15px; /* Apvalinti kampai */
+  padding: 25px; /* Vidiniai atitraukimai */
+  margin-bottom: 25px; /* Atitraukimas tarp kortelių */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); /* Tamsesnis šešėlis, derantis prie tamsesnio fono */
+  color: #ffffff; /* Teksto spalva */
+}
+
+/* Sekcijų (formų) pavadinimai kortelėse */
+.settings-section h3 {
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Formos grupes (label + input) */
+.form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labeliai */
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #cccccc;
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+/* Input laukeliai */
+.settings-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.25); /* Šiek tiek mažiau ryškus apvadas */
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05); /* Švelnus permatomas fonas */
+  color: #ffffff;
+  font-size: 1em;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.settings-input:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.settings-input:focus {
+  border-color: #4299e1; /* Melsva spalva aktyvavus */
+  box-shadow: 0 0 0 0.2rem rgba(66, 153, 225, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Placeholder teksto spalva */
+.settings-input::placeholder {
+  color: #bbbbbb;
+  opacity: 0.9;
+}
+
+
+/* Mygtukų stilius */
+.settings-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  /* Fono gradientas */
+  background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+  color: #ffffff;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+  margin-top: 15px;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); /* Ryškesnis šešėlis */
+}
+
+/* Mygtuko stilius ant kurio užvedamas pelės žymeklis */
+.settings-button:hover {
+  background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+}
+
+/* Mygtuko stilius kai jis paspaudžiamas */
+.settings-button:active {
+  transform: scale(0.97);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Pranešimų stilius (sėkmės / klaidos) */
+.settings-message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    opacity: 0.9;
+}
+
+.settings-message.success {
+    background-color: rgba(40, 167, 69, 0.3);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.6);
+}
+
+.settings-message.error {
+    background-color: rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+     border: 1px solid rgba(220, 53, 69, 0.6);
+}
+
+/* Detalių klaidų konteineris */
+.settings-error-details {
+    background-color: rgba(255, 193, 7, 0.25); /* Šiek tiek ryškesnis permatomas fonas */
+    color: #ffc107;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+     border: 1px solid rgba(255, 193, 7, 0.6);
+}
+
+.settings-error-details p {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.settings-error-details ul {
+    margin-bottom: 0;
+    padding-left: 25px;
+    list-style-type: disc;
+}
+
+.settings-error-details li {
+    margin-bottom: 7px;
+    font-size: 0.95em;
+}
