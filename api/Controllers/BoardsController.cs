@@ -1,7 +1,6 @@
 // Controllers/BoardsController.cs
 // Multiple To-do-list boards
 
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +25,7 @@ namespace TodoListApp.Controllers
             _context = context;
         }
 
-        // GET: Boards
+        // GET: api/boards
         [HttpGet]
         public async Task<IActionResult> GetBoards()
         {
@@ -43,7 +42,7 @@ namespace TodoListApp.Controllers
             return Ok(boards);
         }
 
-        // GET: Boards/Details/5
+        // GET: api/boards/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBoard(int id)
         {
@@ -62,28 +61,41 @@ namespace TodoListApp.Controllers
             return Ok(board);
         }
 
-        // POST: Boards/Create
+        // POST: api/boards
         [HttpPost]
-        public async Task<IActionResult> CreateBoard([FromBody] Board board)
+        public async Task<IActionResult> CreateBoard([FromBody] CreateBoardRequest request)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (string.IsNullOrWhiteSpace(request.Title))
+                return BadRequest("Board title is required");
 
-            board.UserId = userId;
-            board.CreatedAt = DateTime.Now;
+            var board = new Board
+            {
+                Name = request.Title, // Note: Your model uses 'Name' but frontend sends 'title'
+                UserId = userId,
+                CreatedAt = DateTime.Now
+            };
             
             _context.Boards.Add(board);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBoard), new { id = board.Id }, board);
+            // Return the board in the format expected by frontend
+            var response = new
+            {
+                id = board.Id,
+                title = board.Name,
+                createdAt = board.CreatedAt,
+                userId = board.UserId
+            };
+
+            return CreatedAtAction(nameof(GetBoard), new { id = board.Id }, response);
         }
 
-        // PUT: Boards/Edit/5
+        // PUT: api/boards/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBoard(int id, [FromBody] Board board)
         {
@@ -125,7 +137,7 @@ namespace TodoListApp.Controllers
             return NoContent();
         }
 
-        // DELETE: Boards/Delete/5
+        // DELETE: api/boards/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBoard(int id)
         {
@@ -150,5 +162,11 @@ namespace TodoListApp.Controllers
         {
             return _context.Boards.Any(e => e.Id == id);
         }
+    }
+
+    // DTO for create board request
+    public class CreateBoardRequest
+    {
+        public string Title { get; set; } = string.Empty;
     }
 }
