@@ -141,7 +141,7 @@ function BoardsList() {
             boards.map(board => (
               <div key={board.id} className="board-card">
                 <Link to={`/board/${board.id}`} className="board-title">
-                  {board.title}
+                  {board.name}
                 </Link>
                 <div className="board-meta">
                   <span className="board-date">Created: {new Date(board.createdAt).toLocaleDateString()}</span>
