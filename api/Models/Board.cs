@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using MyBackend.Models;
 
 namespace TodoListApp.Models
 {
