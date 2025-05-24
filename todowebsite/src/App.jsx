@@ -6,7 +6,11 @@ import Footer from './Footer.jsx';
 import TaskBoard from './TaskBoard.jsx';
 import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm.jsx';
+
+import BoardsList from './BoardsList.jsx';
+
 import Settings from './Settings.jsx'; // <-- Importuojame Settings komponentą
+
 
 
 // Wrapper component to handle layout logic
@@ -31,13 +35,32 @@ const AppContent = ({ isAuthenticated, setIsAuthenticated }) => {
 
           {/* Apsaugotas TaskBoard puslapis - pasiekiamas tik prisijungus */}
           <Route
-            path="/taskboard"
+            path="/boards"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <BoardsList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/board/:boardId"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <TaskBoard />
               </ProtectedRoute>
             }
           />
+
+          {/* Legacy route - redirect to boards list */}
+          <Route
+            path="/taskboard"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Navigate to="/boards" replace />
+              </ProtectedRoute>
+            }
+          />
+
 
           {/* <-- NAUJAS APSAUGOTAS MARŠRUTAS NUSTATYMŲ PUSLAPIUI --> */}
           {/* Settings puslapis - pasiekiamas tik prisijungus */}
@@ -53,6 +76,7 @@ const AppContent = ({ isAuthenticated, setIsAuthenticated }) => {
 
           {/* Jei turite kitų maršrutų, pridėkite juos čia */}
            {/* <Route path="*" element={<NotFoundPage />} />  // Pvz. 404 Not Found puslapis */}
+
 
         </Routes>
       </div>
