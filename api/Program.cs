@@ -43,11 +43,11 @@ builder.Services.AddAuthentication(options =>
 // *** ADD THIS CORS CONFIGURATION ***
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod());
     });
 });
 
