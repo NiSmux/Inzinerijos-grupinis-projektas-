@@ -6,6 +6,7 @@ import Footer from './Footer.jsx';
 import TaskBoard from './TaskBoard.jsx';
 import LoginForm from './LoginForm.jsx';
 import SignupForm from './SignupForm.jsx';
+import BoardsList from './BoardsList.jsx';
 
 // Wrapper component to handle layout logic
 const AppContent = ({ isAuthenticated, setIsAuthenticated }) => {
