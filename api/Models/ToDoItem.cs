@@ -1,6 +1,7 @@
 // Models/TodoItem.cs - Update your existing TodoItem model to include a reference to Board
 using System;
 using System.ComponentModel.DataAnnotations;
+using MyBackend.Models;
 
 namespace TodoListApp.Models
 {
