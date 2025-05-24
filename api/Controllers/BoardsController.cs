@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using MyBackend.Data;
 using MyBackend.Models;
+using TodoListApp.Models;
 
 namespace TodoListApp.Controllers
 {
