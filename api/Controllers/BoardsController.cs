@@ -15,7 +15,9 @@ using TodoListApp.Models;
 namespace TodoListApp.Controllers
 {
     [Authorize]
-    public class BoardsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BoardsController : ControllerBase
     {
         private readonly AppDbContext _context;
 
